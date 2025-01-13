@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform ball; // The ball to follow
+    
     public float rotationSpeed = 5f; // Speed of rotation when dragging
     public float zoomSpeed = 10f; // Speed of zoom when scrolling
     public float minZoom = 5f; // Minimum zoom distance
@@ -12,14 +12,11 @@ public class CameraFollow : MonoBehaviour
     private float currentZoom = 10f; // Current zoom level
     private float currentRotationX = 0f; // Current rotation around the X axis
     private float currentRotationY = 0f; // Current rotation around the Y axis
+    private Transform ball; // The ball to follow
+
 
     private void Start()
     {
-        if (ball == null) {
-            Debug.LogError("Ball not assigned in the inspector!");
-            return;
-        }
-
         currentZoom = offset.magnitude;
     }
 
@@ -39,6 +36,11 @@ public class CameraFollow : MonoBehaviour
             currentZoom -= zoomInput * zoomSpeed;
             currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom); // Clamp zoom within range
         }
+    }
+
+    public void SetTarget(Transform target)
+    {
+        ball = target;
     }
 
     private void LateUpdate()

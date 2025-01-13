@@ -5,31 +5,41 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     public float speed = 5f;
+
     private Rigidbody rb;
     private Vector3 reposition;
 
-    private void Start()
+    private HexPathGenerator map;
+    private int nextCheckpointIndex;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        SetReposition();
+        nextCheckpointIndex = 0;
+    }
+    private void Start()
+    {
+        Camera.main.GetComponent<CameraFollow>().SetTarget(transform);
     }
 
     private void Update()
     {
         if (transform.position.y < -10f) {
+            MoveToGoalAgent agent = GetComponent<MoveToGoalAgent>();
+            if (agent != null) {
+                agent.AddReward(-10f);
+            }
             Reposition();
         }
     }
 
-    public void SetReposition()
-    {
-        reposition = transform.position;
-    }
 
     public void Reposition()
     {
-        rb.velocity = Vector3.zero;
-        transform.position = reposition + new Vector3(0f, 0.6f, 0f);
+        map.EnableFloor();
+        rb.velocity = new Vector3(0f, -0.1f, 0);
+        nextCheckpointIndex = 0;
+        transform.position = map.GetStartWorldPosition() + new Vector3(0f, 0.6f, 0f);
     }
 
     public void SetVelocity(Vector3 velocity)
@@ -43,5 +53,30 @@ public class Ball : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool IsSlow()
+    {
+        if (rb.velocity.magnitude > 0.2) {
+            return true;
+        }
+        return false;
+    }
+
+    public void SetNextCheckpoint(int nextCheckpointIndex)
+    {
+        this.nextCheckpointIndex = nextCheckpointIndex;
+    }
+
+    public void SetMap(HexPathGenerator generator)
+    {
+        map = generator;
+    }
+
+    public HexPathGenerator GetMap() { return map; }
+
+    public int GetNextCheckpointIndex()
+    {
+        return nextCheckpointIndex;
     }
 }

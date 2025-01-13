@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public TMP_Text hitsDisplay;
 
-    // Pause State
     private bool isPaused = false;
     private int hits = 0;
 

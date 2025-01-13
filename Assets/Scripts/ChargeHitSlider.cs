@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +10,20 @@ public class ChargeHitSlider : MonoBehaviour
     public Image sliderFill; // The Image component of the slider's fill
     public Image sliderRing; // The Image component of the slider's fill
     public Image sliderCenter; // The Image component of the slider's fill
-    public Camera mainCamera; // The camera rendering the scene and UI
     public Gradient colorGradient; // The gradient for the slider's color transition
     public Ball ball; // The 3D ball object with a Collider
 
     private bool isDragging = false;
     private GameManager gm;
+    private Camera mainCamera; // The camera rendering the scene and UI
     private Vector2 direction;
+    private Vector2 releasedDirection = Vector2.zero;
+    private float releasedStrength = 0;
 
     private void Start()
     {
+        mainCamera = Camera.main;
+        
         if (canvasRect == null || sliderTransform == null || slider == null || mainCamera == null || sliderFill == null || colorGradient == null || ball == null) {
             Debug.LogError("Assign all required references in the inspector.");
             return;
@@ -40,10 +45,11 @@ public class ChargeHitSlider : MonoBehaviour
         // Check if the mouse is released
         if (Input.GetMouseButtonUp(0) && isDragging) {
             if (IsPointerOverBall() || direction.magnitude == 0) {
-                Debug.Log("Cancelled action");
+                //Debug.Log("Cancelled action");
             } else {
-                Debug.Log($"Hit value: {slider.value}");
-                ball.SetReposition();
+
+                releasedStrength = direction.magnitude / ball.speed;
+                releasedDirection = -direction.normalized;
                 ball.SetVelocity(new Vector3(-direction.x, 0, -direction.y));
                 gm.AddHit();
             }
@@ -103,9 +109,23 @@ public class ChargeHitSlider : MonoBehaviour
     private bool IsPointerOverBall()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit)) {
+        int layerMask = LayerMask.GetMask("Ball"); // Asegúrate de que la bola está en esta capa
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) {
             return hit.collider.gameObject == ball.gameObject;
         }
         return false;
+    }
+
+    public (Vector2 direction, float strength) GetReleaseDirection()
+    {
+        Vector2 dir = releasedDirection;
+        float s = releasedStrength * 2 - 1;
+        return (dir, s);
+    }
+
+    public void ResetReleaseDirection()
+    {
+        releasedDirection = Vector2.zero;
+        releasedStrength = 0;
     }
 }

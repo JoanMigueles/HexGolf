@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 920039365771495154}
   - component: {fileID: 2260298311781273784}
   - component: {fileID: 7050755318896476740}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 986701131412911654}
   - component: {fileID: 4732494501949390805}
   - component: {fileID: 8944787731058014760}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 6678461982226169968}
   - component: {fileID: 58998305151260397}
   - component: {fileID: 8443436048507395020}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3656336062045063479}
   - component: {fileID: 1022373447371118301}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4537181051024195209}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -361,7 +361,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4284958911319956166}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 961431975382480817}
   - component: {fileID: 2774020505695635720}
   - component: {fileID: 7588132769037547115}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 8578417979368077201}
   - component: {fileID: 7044363641335135691}
   - component: {fileID: 3217358523709559549}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +585,6 @@ MonoBehaviour:
   sliderFill: {fileID: 8443436048507395020}
   sliderRing: {fileID: 4362981618055014793}
   sliderCenter: {fileID: 8944787731058014760}
-  mainCamera: {fileID: 0}
   colorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.79240346, b: 0.2028302, a: 1}
@@ -628,7 +627,7 @@ GameObject:
   - component: {fileID: 8860219265243263451}
   - component: {fileID: 3323951258141595093}
   - component: {fileID: 4362981618055014793}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -706,9 +705,9 @@ GameObject:
   - component: {fileID: 5064891639757949148}
   - component: {fileID: 998656202276904086}
   - component: {fileID: 5460827682657253589}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Golf Ball
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -721,7 +720,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9151079235109447613}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 4.54, y: 4.54, z: 4.54}
   m_ConstrainProportionsScale: 1
@@ -826,7 +825,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &5460827682657253589
 MonoBehaviour:
   m_ObjectHideFlags: 0
