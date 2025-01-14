@@ -149,7 +149,7 @@ public class MoveToGoalAgent : Agent
         if (newDistance < previousDistance && objectiveGridDistance < 4) {
             AddReward(0.1f); // recompensar acercarse al objetivo
         }
-        else if (objectiveGridDistance > 7) {
+        else {
             AddReward(-0.1f);
         }
 

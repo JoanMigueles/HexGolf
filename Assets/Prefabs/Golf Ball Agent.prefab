@@ -890,7 +890,7 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 5000
   requestDecisions: 1
-  coaching: 1
+  coaching: 0
 --- !u!114 &5219504434952560495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2902496c0120472b90269f94a0aec7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Record: 1
+  Record: 0
   NumStepsToRecord: 0
   DemonstrationName: GolfPakkuDemo
   DemonstrationDirectory: Demos

@@ -22,10 +22,10 @@ behaviors:
         strength: 1.0
       gail:
         strength: 0.5
-        demo_path: Demos/GolfDemo.demo
+        demo_path: Demos/GolfPakkuDemo.demo
     behavioral_cloning:
         strength: 0.5
-        demo_path: Demos/GolfDemo.demo
-    max_steps: 500000
+        demo_path: Demos/GolfPakkuDemo.demo
+    max_steps: 5000000
     time_horizon: 128
     summary_freq: 1000
