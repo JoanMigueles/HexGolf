@@ -36,7 +36,7 @@ behaviors:
           deterministic: false
       gail:
         gamma: 0.99
-        strength: 0.1
+        strength: 0.5
         network_settings:
           normalize: false
           hidden_units: 128
