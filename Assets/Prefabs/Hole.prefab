@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1152897803788918480}
   - component: {fileID: 7368666027757557993}
   - component: {fileID: 213757316244147177}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Hex Grass
   m_TagString: Goal
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 1746623817824506129}
   - component: {fileID: 9024160486161381373}
   - component: {fileID: 2271035528865082943}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Hole
   m_TagString: Goal
   m_Icon: {fileID: 0}

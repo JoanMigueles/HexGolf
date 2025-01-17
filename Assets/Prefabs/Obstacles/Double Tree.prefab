@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1073773741768154657}
   - component: {fileID: 6824585437165472352}
   - component: {fileID: 4120555209075621043}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree_single_A
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2191471106037369734}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Double Tree
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 1921763712733098023}
   - component: {fileID: 7734223674369850411}
   - component: {fileID: 404894534746001907}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree_single_A (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

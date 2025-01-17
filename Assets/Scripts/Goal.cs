@@ -26,13 +26,17 @@ public class Goal : MonoBehaviour
             MoveToGoalAgent agent = other.GetComponent<MoveToGoalAgent>();
             if (agent != null) {
                 Debug.Log("Reached Goal!!");
-                agent.AddReward(3.5f);
-                transform.GetComponentInParent<HexPathGenerator>().ResetMap();
-                agent.EndEpisode();
+                agent.AddReward(5f);
 
-            } else {
-                transform.GetComponentInParent<HexPathGenerator>().ResetMap();
+                /*
+                foreach (Transform t in agent.transform.parent) {
+                    MoveToGoalAgent a = t.GetComponent<MoveToGoalAgent>();
+                    a.EndEpisode();
+                }*/
             }
+            other.GetComponent<Ball>().SetState(State.Win);
+            other.gameObject.SetActive(false);
+            GameManager.Instance.CheckEndgame();
         }
     }
 }

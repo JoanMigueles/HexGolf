@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9138859117376820882}
   - component: {fileID: 9059692132334962167}
   - component: {fileID: 1834382787926650263}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: barrel
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 9065312568662857864}
   - component: {fileID: 3913101249266354144}
   - component: {fileID: 163963297363105752}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: barrel (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -226,7 +226,7 @@ GameObject:
   - component: {fileID: 8043192610822130711}
   - component: {fileID: 9190644051287640061}
   - component: {fileID: 1751892033546921647}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: barrel (3)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 883359735126407316}
   - component: {fileID: 5491685165530859344}
   - component: {fileID: 5473178333677051968}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: barrel (2)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -437,7 +437,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3894629158242680987}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Barrels
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

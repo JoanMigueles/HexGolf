@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3149387256440975177}
   - component: {fileID: 8390699206112071768}
   - component: {fileID: 5780343869471777143}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: building_windmill_top_fan_red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 7927978482096398682}
   - component: {fileID: 4971966344315261286}
   - component: {fileID: 7813134297479494105}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Molino
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 2634488551801913688}
   - component: {fileID: 8846798018153271599}
   - component: {fileID: 1142632443874890949}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: building_windmill_top_red
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1925352685231786217}
   - component: {fileID: 2081059508687863769}
   - component: {fileID: 4069619133928465516}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree_single_A (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 7925262180674862904}
   - component: {fileID: 3689351394491251085}
   - component: {fileID: 6102728117991478514}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: tree_single_A
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3744973007686582347}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Forest Section
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 3854717811459750733}
   - component: {fileID: 40784147231348499}
   - component: {fileID: 46187894864950127}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: rock_single_E
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

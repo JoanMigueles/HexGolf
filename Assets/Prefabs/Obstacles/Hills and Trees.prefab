@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4277888034059216971}
   - component: {fileID: 2328068178723178809}
   - component: {fileID: 5683049121227979440}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Hills and Trees
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

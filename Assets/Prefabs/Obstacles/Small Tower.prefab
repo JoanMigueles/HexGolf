@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4067342845709158383}
   - component: {fileID: 8057060568085633874}
   - component: {fileID: 3315077573988874413}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Small Tower
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

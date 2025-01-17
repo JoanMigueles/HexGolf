@@ -1,31 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class MoveToGoalAgent : Agent
 {
     public bool requestDecisions = false;
     public bool coaching = false;
+    public int agentNumber = 1;
     private Ball ball;
     private HexPathGenerator map;
     
-
-    private float previousDistance;
     private int previousGridDistance;
-    private int hits;
+    private int previousGridDistanceToGoal;
 
     private void FixedUpdate()
     {
         if (ball != null && ball.GetMap() != null && requestDecisions) {
             if (!coaching && !ball.IsMoving()) {
-                GiveDistanceReward();
-                RequestDecision();
-            } else if (transform.GetComponentInChildren<ChargeHitSlider>().GetReleaseDirection().direction != Vector2.zero) {
                 GiveDistanceReward();
                 RequestDecision();
             }
@@ -39,121 +32,90 @@ public class MoveToGoalAgent : Agent
         Gizmos.color = Color.blue;
 
         if (map != null) {
-            List<Vector3> points = map.GetNextObjectivesWorldPosition(ball, 3);
-            Gizmos.DrawLine(transform.localPosition, points[0]);
-            
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(transform.localPosition, map.GetGoalWorldPosition());
+            Gizmos.color = Color.cyan; 
+            Gizmos.DrawLine(transform.localPosition, map.GetObjectiveWorldPosition(ball));
+            Vector2Int ballTile = map.GetClosestTileGridPosition(transform.localPosition);
         }
 
         Gizmos.color = originalColor;
     }
 
-    public bool MovedForward()
-    {
-        int gridDistance = ball.GetMap().GetGridDistanceToGoal(ball);
-        return previousGridDistance > gridDistance;
-    }
-
     public override void OnEpisodeBegin()
     {
-        if (CompletedEpisodes > 0) {
-            //map.ResetMap();
-        } else {
+        if (CompletedEpisodes <= 0) {
             ball = GetComponent<Ball>();
             map = ball.GetMap();
         }
 
-        previousDistance = float.MaxValue;
         previousGridDistance = int.MaxValue;
+        previousGridDistanceToGoal = int.MaxValue;
         ball.Reposition();
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        Vector3 goalPosition = map.GetGoalWorldPosition();
-        
-        // positions
+        // Local position
         sensor.AddObservation(transform.localPosition); // observar el vector posicion de la bola, 3 observations
-        sensor.AddObservation(goalPosition); // observar meta, 3 observations
-        int gridDistanceToGoal = map.GetGridDistanceToGoal(ball);
-        sensor.AddObservation(gridDistanceToGoal); // observar distancia a la meta (en path), 1 observations
 
+        Vector3 goalPosition = map.GetGoalWorldPosition();
+        sensor.AddObservation(goalPosition); // observar el vector posicion de la meta, 3 observations
 
-        // Checkpoint system
-        List<Vector3> checkpointPositions = map.GetNextObjectivesWorldPosition(ball, 3);
-        sensor.AddObservation(ball.GetNextCheckpointIndex()); // observar index checkpoint
-        if (checkpointPositions.Count == 3) {
-            foreach (Vector3 position in checkpointPositions) {
-                sensor.AddObservation(position); // observar siguiente checkpoint, 3 * 3 = 9 observations
-            }
-        }
-        else {
-            for (int i = 0; i < 3; i++) {
-                sensor.AddObservation(Vector3.zero);
-            }
-        }
-        int gridDistanceToObjective = map.GetGridDistanceToObjective(ball);
-        sensor.AddObservation(gridDistanceToObjective); // observar distancia al checkpoint, 1 observations
-        Vector3 directionToObjective = map.GetDirectionToObjective(ball);
-        sensor.AddObservation(directionToObjective); // observar direccion al checkpoint, 3 observations
+        Vector3 objectivePosition = map.GetObjectiveWorldPosition(ball);
+        sensor.AddObservation(objectivePosition); // observar el vector posicion del objetivo, 3 observations
+
+        Vector3 direction = objectivePosition - transform.localPosition;
+        sensor.AddObservation(direction); // observar el vector distancia del objetivo, 3 observations
+
+        // (TOTAL = 12)
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        Vector2 direction = new Vector2(actions.ContinuousActions[0], actions.ContinuousActions[1]);
+        int angle = actions.DiscreteActions[0] * 10; // Ángulo (36 direcciones correspondiendo con las 90 direciones de los rayscasts)
+        float strength = (actions.DiscreteActions[1] + 1) * 0.1f; // Fuerza del tiro (escala del 1 al 10)
 
-        float strength = (actions.ContinuousActions[2] + 1) / 2;
+        Vector2 direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+
         direction = direction.normalized * strength * ball.speed;
         ball.SetVelocity(new Vector3(direction.x, 0, direction.y));
-        hits++;
-        AddReward(-0.1f); // para darle prisa a la pelota
-        if (hits >= MaxStep) {
-            hits = 0;
-            EndEpisode();
-        }
+        GameManager.Instance.AddHit(agentNumber);
+        AddReward(-1f / MaxStep); // Para darle prisa a la pelota
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        // Get the direction and strength from the provided function
-        (Vector2 direction, float strength) = transform.GetComponentInChildren<ChargeHitSlider>().GetReleaseDirection();
-        Debug.Log(direction.ToString() + " " + strength);
-
-        transform.GetComponentInChildren<ChargeHitSlider>().ResetReleaseDirection();
-
-        var continuousActions = actionsOut.ContinuousActions;
-
-        continuousActions[0] = direction.x; // X-component of the direction
-        continuousActions[1] = direction.y; // Y-component of the direction
-        continuousActions[2] = strength;    // Kick strength
+        
     }
 
     private void GiveDistanceReward()
     {
-        int newGridDistance = map.GetGridDistanceToGoal(ball);
-        if (previousGridDistance - newGridDistance < 10) {
-            if (previousGridDistance > newGridDistance) {
-                AddReward((previousGridDistance - newGridDistance) * 0.1f);
+        int newGridDistance = map.GetGridDistanceToObjective(ball);
+        int newGridDistanceToGoal = map.GetGridDistanceToGoal(ball);
+        if (!ball.checkpointPassed) {
+            if (previousGridDistance - newGridDistance < 10) {
+                if (previousGridDistance > newGridDistance) { // Si se acerca a la meta
+                    float reward = (previousGridDistance - newGridDistance) * 0.1f; // Recompensar en base a cuanto se acerca a la meta
+                    if (reward > 0.3) reward = reward * 2; // Recompensar tiros largos (que acercan más a la meta) duplicando la recompensa
+                    AddReward(reward);
+                }
+                else {
+                    AddReward(-0.1f); // Penalizar alejarse de la meta
+                }
             }
             else {
-                AddReward(-0.05f);
+                AddReward(2f); // Máxima recompensa de acercarse
+            }
+        } else {
+            ball.checkpointPassed = false;
+            if (newGridDistanceToGoal > previousGridDistanceToGoal) {
+                AddReward(-1f); //Penalizar entrar y salir de un checkpoint
+                int next = ball.GetNextCheckpointIndex() - 1;
+                if (next < 0) { next = 0; }
+                ball.SetNextCheckpoint(next);
             }
         }
-        else {
-            AddReward(1f);
-        }
 
-        float newDistance = map.GetDistanceToObjective(ball);
-        int objectiveGridDistance = map.GetGridDistanceToObjective(ball);
-        if (newDistance < previousDistance && objectiveGridDistance < 4) {
-            AddReward(0.1f); // recompensar acercarse al objetivo
-        }
-        else {
-            AddReward(-0.1f);
-        }
-
-        previousDistance = newDistance;
         previousGridDistance = newGridDistance;
+        previousGridDistanceToGoal = newGridDistanceToGoal;
     }
 }

@@ -17,13 +17,12 @@ public class ChargeHitSlider : MonoBehaviour
     private GameManager gm;
     private Camera mainCamera; // The camera rendering the scene and UI
     private Vector2 direction;
-    private Vector2 releasedDirection = Vector2.zero;
-    private float releasedStrength = 0;
 
     private void Start()
     {
         mainCamera = Camera.main;
-        
+        mainCamera.GetComponent<CameraFollow>().SetTarget(transform.parent);
+
         if (canvasRect == null || sliderTransform == null || slider == null || mainCamera == null || sliderFill == null || colorGradient == null || ball == null) {
             Debug.LogError("Assign all required references in the inspector.");
             return;
@@ -47,11 +46,8 @@ public class ChargeHitSlider : MonoBehaviour
             if (IsPointerOverBall() || direction.magnitude == 0) {
                 //Debug.Log("Cancelled action");
             } else {
-
-                releasedStrength = direction.magnitude / ball.speed;
-                releasedDirection = -direction.normalized;
                 ball.SetVelocity(new Vector3(-direction.x, 0, -direction.y));
-                gm.AddHit();
+                gm.AddHit(0);
             }
             isDragging = false;
             sliderTransform.gameObject.SetActive(false);
@@ -114,18 +110,5 @@ public class ChargeHitSlider : MonoBehaviour
             return hit.collider.gameObject == ball.gameObject;
         }
         return false;
-    }
-
-    public (Vector2 direction, float strength) GetReleaseDirection()
-    {
-        Vector2 dir = releasedDirection;
-        float s = releasedStrength * 2 - 1;
-        return (dir, s);
-    }
-
-    public void ResetReleaseDirection()
-    {
-        releasedDirection = Vector2.zero;
-        releasedStrength = 0;
     }
 }

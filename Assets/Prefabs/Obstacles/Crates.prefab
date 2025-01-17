@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1124045323935172910}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Crates
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 979533611590205317}
   - component: {fileID: 8464630503798367890}
   - component: {fileID: 3460730996436038291}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Crate
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 8404673863489125007}
   - component: {fileID: 6578625463019885811}
   - component: {fileID: 494822221896968038}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bucket
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 5644829972965015772}
   - component: {fileID: 1141895730296562996}
   - component: {fileID: 2576254642905324918}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bucket (1)
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 3363890217619782369}
   - component: {fileID: 4834464614960933221}
   - component: {fileID: 6666547768093792476}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bucket
   m_TagString: Obstacle
   m_Icon: {fileID: 0}

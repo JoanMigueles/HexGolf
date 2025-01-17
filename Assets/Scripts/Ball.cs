@@ -2,13 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum State
+{
+    Playing,
+    Win,
+    Lose
+}
+
 public class Ball : MonoBehaviour
 {
     public float speed = 5f;
+    public bool checkpointPassed = false;
+
+    private State state;
 
     private Rigidbody rb;
-    private Vector3 reposition;
-
     private HexPathGenerator map;
     private int nextCheckpointIndex;
 
@@ -16,10 +24,7 @@ public class Ball : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         nextCheckpointIndex = 0;
-    }
-    private void Start()
-    {
-        Camera.main.GetComponent<CameraFollow>().SetTarget(transform);
+        state = State.Playing;
     }
 
     private void Update()
@@ -66,6 +71,7 @@ public class Ball : MonoBehaviour
     public void SetNextCheckpoint(int nextCheckpointIndex)
     {
         this.nextCheckpointIndex = nextCheckpointIndex;
+        checkpointPassed = nextCheckpointIndex > 0;
     }
 
     public void SetMap(HexPathGenerator generator)
@@ -78,5 +84,15 @@ public class Ball : MonoBehaviour
     public int GetNextCheckpointIndex()
     {
         return nextCheckpointIndex;
+    }
+
+    public void SetState(State state)
+    {
+        this.state = state;
+    }
+
+    public State GetState()
+    {
+        return this.state;
     }
 }

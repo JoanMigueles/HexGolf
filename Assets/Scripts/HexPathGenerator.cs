@@ -30,16 +30,17 @@ public class HexPathGenerator : MonoBehaviour
     public int minRoomSize = 3; // Tamaño mínimo de una sala
     public int maxUnavoidableObstacleCount = 5;
     public int obstacleCount = 20; // Número de obstáculos
+    public int checkpointCount = 0;
 
 
     [SerializeField] private GameObject floor;
 
     private List<Checkpoint> checkpoints;
     private bool[,] tiles;
-    private int pathCode;
     private List<RectInt> rooms;
     private Vector2Int start;
     private Vector2Int goal;
+    private int pathLength;
 
     // Estructura para representar las regiones del BSP
     private class BSPRegion
@@ -74,10 +75,12 @@ public class HexPathGenerator : MonoBehaviour
         GenerateRooms(root);
         GeneratePaths();
 
+        // Define inicio y meta
         FindLongestPath();
 
+        // Instancia y posiciona objetos
         RenderTiles();
-        //PlaceObstacles();
+        PlaceObstacles();
     }
 
     public void ResetMap()
@@ -89,9 +92,10 @@ public class HexPathGenerator : MonoBehaviour
             }
         }
 
-        // Destroy all existing tiles and obstacles
         foreach (Transform agent in agents.transform) {
+            agent.gameObject.SetActive(true);
             Ball ball = agent.GetComponent<Ball>();
+            agent.GetComponent<MoveToGoalAgent>().EndEpisode();
             ball.SetNextCheckpoint(0);
         }
 
@@ -228,6 +232,7 @@ public class HexPathGenerator : MonoBehaviour
                 int pathLength = p.length;
                 if (pathLength > longestPathLength) {
                     longestPathLength = pathLength;
+                    this.pathLength = pathLength;
                     bestStart = pointA;
                     bestFinish = pointB;
                     pathToGoal = p.path;
@@ -247,16 +252,12 @@ public class HexPathGenerator : MonoBehaviour
             pathToGoal.Reverse();
         }
 
+        int checkpointStep = 0;
         foreach (Vector2Int tile in pathToGoal) {
-            bool inRoom = false;
-            foreach (RectInt room in rooms) {
-                if (room.Contains(tile)) {
-                    inRoom = true;
-                    break;
-                }
-            }
-            if (!inRoom) {
+            checkpointStep++;
+            if (tile != goal && checkpointStep > 2) {
                 PlaceCheckpoint(tile);
+                checkpointStep = 0;
             }
         }
     }
@@ -270,6 +271,7 @@ public class HexPathGenerator : MonoBehaviour
         Checkpoint c = checkpoint.GetComponentInChildren<Checkpoint>();
         c.Initialize(this, position);
         checkpoints.Add(c);
+        checkpointCount = checkpoints.Count;
     }
 
 
@@ -334,18 +336,17 @@ public class HexPathGenerator : MonoBehaviour
                     if (start == new Vector2Int(i, j)) {
                         tile = Instantiate(startHexPrefab, transform);
                         tile.transform.localPosition = pos;
-                        if (!useAgents) {
-                            GameObject player = Instantiate(ballPrefab, tile.transform.GetChild(0).position, Quaternion.identity, transform);
-                            player.GetComponent<Ball>().SetVelocity(new Vector3(0, -0.1f, 0));
-                            player.GetComponent<Ball>().SetMap(this);
-                        }
-                        else {
+                        if (useAgents) {
                             foreach (Transform agent in agents.transform) {
                                 agent.position = tile.transform.GetChild(0).position;
                                 agent.GetComponent<Ball>().SetVelocity(new Vector3(0, -0.1f, 0));
                                 agent.GetComponent<Ball>().SetMap(this);
                             }
                         }
+                        GameObject player = Instantiate(ballPrefab, tile.transform.GetChild(0).position, Quaternion.identity, transform);
+                        player.GetComponent<Ball>().SetVelocity(new Vector3(0, -0.1f, 0));
+                        player.GetComponent<Ball>().SetMap(this);
+                        GameManager.Instance.player = player;
                     } else if (goal == new Vector2Int(i, j)) {
                         tile = Instantiate(holeHexPrefab, transform);
                         tile.transform.localPosition = pos;
@@ -417,6 +418,10 @@ public class HexPathGenerator : MonoBehaviour
             start,
             goal
         };
+
+        foreach (Checkpoint checkpoint in checkpoints) {
+            occupiedPositions.Add(checkpoint.gridPosition);
+        }
 
         int i = 0;
         while (placedUnavoidableObstacles < maxUnavoidableObstacleCount) {
@@ -507,24 +512,35 @@ public class HexPathGenerator : MonoBehaviour
         return GetTileWorldPosition(goal.x, goal.y);
     }
 
+    public Vector2Int GetGoalGridPosition()
+    {
+        return goal;
+    }
+
     public Vector3 GetStartWorldPosition()
     {
         return GetTileWorldPosition(start.x, start.y);
     }
 
-    public List<Vector3> GetNextObjectivesWorldPosition(Ball ball, int amount)
+    public Vector2Int GetStartGridPosition()
     {
-        List<Vector3> objectivePositions = new List<Vector3>();
-        for (int i = 0; i < amount; i++) {
-            if (ball.GetNextCheckpointIndex() + i >= checkpoints.Count) {
-                objectivePositions.Add(GetGoalWorldPosition());
-            }
-            else {
-                objectivePositions.Add(checkpoints[ball.GetNextCheckpointIndex() + i].transform.parent.localPosition);
-            }
-        }
-        return objectivePositions;
+        return start;
     }
+
+    public float GetDistanceToGoal(Ball ball)
+    {
+        return (GetGoalWorldPosition() - ball.transform.localPosition).magnitude;
+
+    }
+
+    public int GetGridDistanceToGoal(Ball ball)
+    {
+        Vector2Int gridPosition = GetClosestTileGridPosition(ball.transform.localPosition);
+
+        return CalculatePath(gridPosition, goal).length;
+    }
+
+    
     public Vector3 GetObjectiveWorldPosition(Ball ball)
     {
         if (ball.GetNextCheckpointIndex() >= checkpoints.Count) {
@@ -535,28 +551,6 @@ public class HexPathGenerator : MonoBehaviour
         }
     }
 
-    public Vector3 GetDirectionToObjective(Ball ball)
-    {
-        if (ball.GetNextCheckpointIndex() >= checkpoints.Count) {
-            return (GetGoalWorldPosition() - ball.transform.localPosition);
-        } else {
-            return checkpoints[ball.GetNextCheckpointIndex()].transform.parent.localPosition - ball.transform.localPosition;
-        }
-        
-    }
-
-    public float GetDistanceToObjective(Ball ball)
-    {
-        return (GetObjectiveWorldPosition(ball) - ball.transform.localPosition).magnitude;
-
-    }
-
-    public int GetGridDistanceToGoal(Ball ball)
-    {
-        Vector2Int gridPosition = GetClosestTileGridPosition(ball.transform.localPosition);
-
-        return CalculatePath(gridPosition, goal).length;
-    }
 
     public int GetGridDistanceToObjective(Ball ball)
     {
@@ -569,6 +563,16 @@ public class HexPathGenerator : MonoBehaviour
             return CalculatePath(gridPosition, checkpoints[ball.GetNextCheckpointIndex()].gridPosition).length;
         }
 
+    }
+
+    public bool[,] GetMapValues()
+    {
+        return tiles;
+    }
+
+    public int GetPathLength()
+    {
+        return pathLength;
     }
 
     public void OnCheckpointEnter(Checkpoint checkpoint, Ball ball)
@@ -584,7 +588,7 @@ public class HexPathGenerator : MonoBehaviour
             if (useAgents) {
                 MoveToGoalAgent agent = ball.GetComponent<MoveToGoalAgent>();
                 if (agent == null) return;
-                agent.AddReward(1f);
+                agent.AddReward(0.5f);
             }
         }
     }
